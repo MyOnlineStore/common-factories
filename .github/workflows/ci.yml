@@ -1,0 +1,55 @@
+name: CI
+
+on: push
+
+jobs:
+    test:
+        name: Test (PHP ${{ matrix.php-version }} on ${{ matrix.operating-system }})
+
+        strategy:
+            fail-fast: false
+            matrix:
+                php-version: ['7.0', '7.2', '7.3']
+                operating-system: ['ubuntu-16.04', 'ubuntu-18.04']
+
+        runs-on: ${{ matrix.operating-system }}
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v1
+                with:
+                    php-version: ${{ matrix.php-version }}
+                    coverage: xdebug
+
+            -   name: Cache Dependencies
+                uses: actions/cache@v1
+                with:
+                    path: ~/.composer/cache
+                    key: ${{ matrix.operating-system }}-php${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.json') }}
+                    restore-keys: ${{ matrix.operating-system }}-php${{ matrix.php-version }}-composer-
+
+            -   name: Install Dependencies
+                run: composer install --no-ansi --no-interaction --no-progress --no-suggest --prefer-dist
+
+            -   name: Codestyle
+                run: vendor/bin/phpcs
+
+            -   name: Unit Tests
+                run: |
+                    php vendor/bin/phpunit --coverage-text=coverage.txt --colors=never
+                    COVERAGE=$(php -r 'preg_match("#Lines:\s*(\d+.\d+)%#", file_get_contents("coverage.txt"), $out); echo $out[1];')
+                    echo "::set-env name=COVERAGE::${COVERAGE}"
+
+            -   name: Psalm
+                run: vendor/bin/psalm --shepherd
+
+            -   name: Report PR Status
+                uses: actions/github-script@0.4.0
+                with:
+                    github-token: ${{ secrets.GITHUB_TOKEN }}
+                    script: |
+                        const coverage = parseFloat(process.env.COVERAGE);
+                        github.repos.createStatus({...context.repo, sha: context.sha, state: coverage > 99 ? 'success' : 'failure', context: 'Test Coverage', description: coverage+'%'});

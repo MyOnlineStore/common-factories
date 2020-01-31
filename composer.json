@@ -1,0 +1,35 @@
+{
+    "name": "myonlinestore/common-factories",
+    "description": "Common Factories",
+    "homepage": "https://github.com/MyOnlineStore/common-factories",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "MyOnlineStore\\Common\\Factory\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MyOnlineStore\\Common\\Factory\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^7.0",
+        "ext-json": "*",
+        "psr/http-message": "^1.0",
+        "laminas/laminas-diactoros": "^1.8",
+        "ircmaxell/random-lib": "^1.2",
+        "symfony/lock": "^3.4"
+    },
+    "config": {
+        "platform": {
+            "php": "7.0.33"
+        }
+    },
+    "require-dev": {
+        "myonlinestore/coding-standard": "^1.0",
+        "vimeo/psalm": "^3.2",
+        "phpunit/phpunit": "^6.5"
+    }
+}
