@@ -5,7 +5,7 @@ namespace MyOnlineStore\Common\Factory\Locking\Strategy;
 
 interface Strategy
 {
-    const DEFAULT_DURATION = 10;
+    public const DEFAULT_DURATION = 10;
 
     public function getLockName(): string;
 

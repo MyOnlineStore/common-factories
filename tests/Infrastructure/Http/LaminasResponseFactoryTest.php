@@ -16,21 +16,21 @@ final class LaminasResponseFactoryTest extends TestCase
     /** @var LaminasResponseFactory */
     private $factory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->factory = new LaminasResponseFactory(
             $this->streamFactory = $this->createMock(StreamFactory::class)
         );
     }
 
-    public function testCreateResponseWillReturnInstanceOfResponseWithGivenStatusCode()
+    public function testCreateResponseWillReturnInstanceOfResponseWithGivenStatusCode(): void
     {
         $statusCode = 201;
 
         self::assertSame($statusCode, $this->factory->createResponse($statusCode)->getStatusCode());
     }
 
-    public function testCreateResponseFromStringWithBodyOnlyWillReturnInstanceOfResponse()
+    public function testCreateResponseFromStringWithBodyOnlyWillReturnInstanceOfResponse(): void
     {
         $this->streamFactory->expects(self::once())
             ->method('createFromString')
@@ -44,7 +44,7 @@ final class LaminasResponseFactoryTest extends TestCase
         self::assertSame([], $response->getHeaders());
     }
 
-    public function testCreateResponseFromStringWithBodyAndStatusCodeOnlyWillReturnInstanceOfResponse()
+    public function testCreateResponseFromStringWithBodyAndStatusCodeOnlyWillReturnInstanceOfResponse(): void
     {
         $stream = $this->createMock(StreamInterface::class);
 
@@ -60,7 +60,7 @@ final class LaminasResponseFactoryTest extends TestCase
         self::assertEquals([], $response->getHeaders());
     }
 
-    public function testCreateResponseFromStringWillReturnInstanceOfResponse()
+    public function testCreateResponseFromStringWillReturnInstanceOfResponse(): void
     {
         $this->streamFactory->expects(self::once())
             ->method('createFromString')
@@ -74,7 +74,7 @@ final class LaminasResponseFactoryTest extends TestCase
         self::assertSame(['foo' => ['bar']], $response->getHeaders());
     }
 
-    public function testCreateJsonResponseWillReturnInstanceOfResponse()
+    public function testCreateJsonResponseWillReturnInstanceOfResponse(): void
     {
         $data = ['foo' => 'bar'];
         $response = $this->factory->createJsonResponse($data, 203);
@@ -83,7 +83,7 @@ final class LaminasResponseFactoryTest extends TestCase
         self::assertSame(203, $response->getStatusCode());
     }
 
-    public function testCreateRedirectResponseWillReturnInstanceOfResponseWithGivenStatusCode()
+    public function testCreateRedirectResponseWillReturnInstanceOfResponseWithGivenStatusCode(): void
     {
         $response = $this->factory->createRedirectResponse(
             $uri = 'http://foobar.baz',

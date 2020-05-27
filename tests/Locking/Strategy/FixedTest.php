@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class FixedTest extends TestCase
 {
-    public function testGetters()
+    public function testGetters(): void
     {
         $strategy = new Fixed(
             $lockName = 'foo',
@@ -20,7 +20,7 @@ final class FixedTest extends TestCase
         self::assertSame($lockDuration, $strategy->getLockDuration());
     }
 
-    public function testDefaultLockDuration()
+    public function testDefaultLockDuration(): void
     {
         self::assertSame(Strategy::DEFAULT_DURATION, (new Fixed('foo'))->getLockDuration());
     }

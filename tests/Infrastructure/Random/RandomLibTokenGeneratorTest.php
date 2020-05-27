@@ -15,14 +15,14 @@ final class RandomLibTokenGeneratorTest extends TestCase
     /** @var Generator */
     private $mockGenerator;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->generator = new RandomLibTokenGenerator(
             $this->mockGenerator = $this->createMock(Generator::class)
         );
     }
 
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $this->mockGenerator->expects(self::once())
             ->method('generate')
@@ -32,7 +32,7 @@ final class RandomLibTokenGeneratorTest extends TestCase
         self::assertSame('foobar', $this->generator->generate(5));
     }
 
-    public function testGenerateInt()
+    public function testGenerateInt(): void
     {
         $this->mockGenerator->expects(self::once())
             ->method('generateInt')
@@ -42,7 +42,7 @@ final class RandomLibTokenGeneratorTest extends TestCase
         self::assertSame(7, $this->generator->generateInt(5, 10));
     }
 
-    public function testGenerateString()
+    public function testGenerateString(): void
     {
         $this->mockGenerator->expects(self::once())
             ->method('generateString')

@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace MyOnlineStore\Common\Factory\Infrastructure\Locking;
 
-use Symfony\Component\Lock\Factory;
-use Symfony\Component\Lock\StoreInterface;
+use Symfony\Component\Lock\LockFactory;
+use Symfony\Component\Lock\PersistingStoreInterface;
 
 interface SymfonyLockFactoryProvider
 {
     /**
      * @param int $timeout Number of milliseconds to wait for lock
      */
-    public function getFactory(StoreInterface $store, int $timeout = 0): Factory;
+    public function getFactory(PersistingStoreInterface $store, int $timeout = 0): LockFactory;
 }

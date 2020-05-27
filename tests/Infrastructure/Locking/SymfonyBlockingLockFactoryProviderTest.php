@@ -5,36 +5,57 @@ namespace MyOnlineStore\Common\Factory\Tests\Infrastructure\Locking;
 
 use MyOnlineStore\Common\Factory\Infrastructure\Locking\SymfonyBlockingLockFactoryProvider;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Lock\LockFactory;
+use Symfony\Component\Lock\PersistingStoreInterface;
 use Symfony\Component\Lock\Store\RetryTillSaveStore;
-use Symfony\Component\Lock\StoreInterface;
 
 final class SymfonyBlockingLockFactoryProviderTest extends TestCase
 {
     /** @var SymfonyBlockingLockFactoryProvider */
     private $lockFactoryProvider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->lockFactoryProvider = new SymfonyBlockingLockFactoryProvider();
     }
 
-    public function testGetFactoryWillReturnFactoryInstance()
+    public function testGetFactoryWillReturnFactoryInstance(): void
     {
         $factory = $this->lockFactoryProvider->getFactory(
-            $store = $this->createMock(StoreInterface::class),
+            $store = $this->createMock(PersistingStoreInterface::class),
             0
         );
 
-        self::assertAttributeSame($store, 'store', $factory);
+        self::assertSame($store, $this->getLock($factory));
     }
 
-    public function testGetFactoryWithTimeoutWillReturnFactoryInstanceWithDecoratedStorage()
+    public function testGetFactoryWithTimeoutWillReturnFactoryInstanceWithDecoratedStorage(): void
     {
         $factory = $this->lockFactoryProvider->getFactory(
-            $this->createMock(StoreInterface::class),
+            $this->createMock(PersistingStoreInterface::class),
             100
         );
 
-        self::assertAttributeInstanceOf(RetryTillSaveStore::class, 'store', $factory);
+        self::assertInstanceOf(RetryTillSaveStore::class, $this->getLock($factory));
+    }
+
+    private function getLock(LockFactory $factory): object
+    {
+        $reflector = new \ReflectionObject($factory);
+
+        do {
+            try {
+                $attribute = $reflector->getProperty('store');
+
+                $attribute->setAccessible(true);
+                $value = $attribute->getValue($factory);
+                $attribute->setAccessible(false);
+
+                return $value;
+            } catch (\ReflectionException $e) {
+            }
+        } while ($reflector = $reflector->getParentClass());
+
+        throw new \RuntimeException('No store found');
     }
 }

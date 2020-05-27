@@ -5,7 +5,7 @@ namespace MyOnlineStore\Common\Factory\Random;
 
 interface TokenGenerator
 {
-    const DEFAULT_CHARACTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    public const DEFAULT_CHARACTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
     public function generate(int $size): string;
 

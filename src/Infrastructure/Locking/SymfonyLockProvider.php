@@ -8,7 +8,7 @@ use MyOnlineStore\Common\Factory\Locking\LockProvider;
 use Symfony\Component\Lock\Exception\LockAcquiringException;
 use Symfony\Component\Lock\Exception\LockConflictedException;
 use Symfony\Component\Lock\LockInterface;
-use Symfony\Component\Lock\StoreInterface;
+use Symfony\Component\Lock\PersistingStoreInterface;
 
 final class SymfonyLockProvider implements LockProvider
 {
@@ -22,21 +22,18 @@ final class SymfonyLockProvider implements LockProvider
      */
     private $locks = [];
 
-    /** @var StoreInterface */
+    /** @var PersistingStoreInterface */
     private $storage;
 
     public function __construct(
         SymfonyLockFactoryProvider $lockFactoryProvider,
-        StoreInterface $storage
+        PersistingStoreInterface $storage
     ) {
         $this->lockFactoryProvider = $lockFactoryProvider;
         $this->storage = $storage;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function acquire(string $name, int $timeout = 10)
+    public function acquire(string $name, int $timeout = 10): void
     {
         if (isset($this->locks[$name])) {
             throw new LockNotAcquirable(\sprintf('Lock "%s" was already acquired', $name));
@@ -70,7 +67,7 @@ final class SymfonyLockProvider implements LockProvider
         return \array_keys($this->locks);
     }
 
-    public function release(string $name)
+    public function release(string $name): void
     {
         if (!isset($this->locks[$name])) {
             return;
