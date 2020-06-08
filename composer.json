@@ -15,21 +15,21 @@
         }
     },
     "require": {
-        "php": "^7.0",
+        "php": "^7.2",
         "ext-json": "*",
         "psr/http-message": "^1.0",
         "laminas/laminas-diactoros": "^1.8",
         "ircmaxell/random-lib": "^1.2",
-        "symfony/lock": "^3.4"
+        "symfony/lock": "^4.4 || ^5.0"
     },
     "config": {
         "platform": {
-            "php": "7.0.33"
+            "php": "7.2.24"
         }
     },
     "require-dev": {
-        "myonlinestore/coding-standard": "^1.0",
-        "vimeo/psalm": "^3.2",
-        "phpunit/phpunit": "^6.5"
+        "myonlinestore/coding-standard": "^2.0",
+        "vimeo/psalm": "^3.11",
+        "phpunit/phpunit": "^8.5"
     }
 }

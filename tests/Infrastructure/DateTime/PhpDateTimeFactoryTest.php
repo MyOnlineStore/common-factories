@@ -11,12 +11,12 @@ final class PhpDateTimeFactoryTest extends TestCase
     /** @var PhpDateTimeFactory */
     private $factory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->factory = new PhpDateTimeFactory();
     }
 
-    public function testCreate()
+    public function testCreate(): void
     {
         $time = '2011-11-11';
         $dateTimeZone = new \DateTimeZone('Europe/Amsterdam');
@@ -27,7 +27,7 @@ final class PhpDateTimeFactoryTest extends TestCase
         );
     }
 
-    public function testCreateImmutable()
+    public function testCreateImmutable(): void
     {
         $time = '2011-11-11';
         $dateTimeZone = new \DateTimeZone('Europe/Amsterdam');
@@ -38,7 +38,7 @@ final class PhpDateTimeFactoryTest extends TestCase
         );
     }
 
-    public function testCreateImmutableFromFormat()
+    public function testCreateImmutableFromFormat(): void
     {
         self::assertEquals(
             \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-11-06 14:00:00'),
@@ -46,7 +46,7 @@ final class PhpDateTimeFactoryTest extends TestCase
         );
     }
 
-    public function testCreateImmutableFromMutable()
+    public function testCreateImmutableFromMutable(): void
     {
         $dateTime = new \DateTime('2011-11-11', new \DateTimeZone('Europe/Amsterdam'));
 

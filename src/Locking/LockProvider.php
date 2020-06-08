@@ -8,7 +8,7 @@ interface LockProvider
     /**
      * @throws LockNotAcquirable
      */
-    public function acquire(string $name, int $timeout = 10);
+    public function acquire(string $name, int $timeout = 10): void;
 
     /**
      * Returns the names of all acquired locks within this runtime
@@ -17,5 +17,5 @@ interface LockProvider
      */
     public function getAcquiredLockNames(): array;
 
-    public function release(string $name);
+    public function release(string $name): void;
 }

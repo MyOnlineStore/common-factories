@@ -9,16 +9,16 @@ use MyOnlineStore\Common\Factory\Locking\LockNotAcquirable;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Lock\Exception\LockAcquiringException;
 use Symfony\Component\Lock\Exception\LockConflictedException;
-use Symfony\Component\Lock\Factory;
+use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\LockInterface;
-use Symfony\Component\Lock\StoreInterface;
+use Symfony\Component\Lock\PersistingStoreInterface;
 
 final class SymfonyLockProviderTest extends TestCase
 {
     /** @var LockInterface */
     private $lock;
 
-    /** @var Factory */
+    /** @var LockFactory */
     private $lockFactory;
 
     /** @var SymfonyLockFactoryProvider */
@@ -27,18 +27,18 @@ final class SymfonyLockProviderTest extends TestCase
     /** @var SymfonyLockProvider */
     private $lockProvider;
 
-    /** @var StoreInterface */
+    /** @var PersistingStoreInterface */
     private $storage;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->lockProvider = new SymfonyLockProvider(
             $this->lockFactoryProvider = $this->createMock(SymfonyLockFactoryProvider::class),
-            $this->storage = $this->createMock(StoreInterface::class)
+            $this->storage = $this->createMock(PersistingStoreInterface::class)
         );
 
         $this->lock = $this->createMock(LockInterface::class);
-        $this->lockFactory = $this->createMock(Factory::class);
+        $this->lockFactory = $this->createMock(LockFactory::class);
     }
 
     public function blockingTimoutDataProvider(): \Generator
@@ -48,7 +48,7 @@ final class SymfonyLockProviderTest extends TestCase
         yield [-1, false];
     }
 
-    public function testGetAcquiredLockNames()
+    public function testGetAcquiredLockNames(): void
     {
         $lockName = 'foo';
 
@@ -59,7 +59,7 @@ final class SymfonyLockProviderTest extends TestCase
         self::assertEquals([$lockName], $this->lockProvider->getAcquiredLockNames());
     }
 
-    public function testGetWillThrowExceptionIfLockIsConflicted()
+    public function testGetWillThrowExceptionIfLockIsConflicted(): void
     {
         $this->expectException(LockNotAcquirable::class);
 
@@ -81,7 +81,7 @@ final class SymfonyLockProviderTest extends TestCase
         $this->lockProvider->acquire('foo');
     }
 
-    public function testGetWillThrowExceptionIfLockAcquireFailsWithAnException()
+    public function testGetWillThrowExceptionIfLockAcquireFailsWithAnException(): void
     {
         $this->expectException(LockNotAcquirable::class);
 
@@ -103,7 +103,7 @@ final class SymfonyLockProviderTest extends TestCase
         $this->lockProvider->acquire('foo');
     }
 
-    public function testGetWillThrowExceptionIfLockCannotBeAcquired()
+    public function testGetWillThrowExceptionIfLockCannotBeAcquired(): void
     {
         $this->expectException(LockNotAcquirable::class);
 
@@ -124,9 +124,8 @@ final class SymfonyLockProviderTest extends TestCase
 
     /**
      * @dataProvider blockingTimoutDataProvider
-     *
      */
-    public function testGetWillAcquireLock(int $timeout, bool $blocking)
+    public function testGetWillAcquireLock(int $timeout, bool $blocking): void
     {
         $this->lockFactoryProvider->expects(self::once())
             ->method('getFactory')
@@ -143,7 +142,7 @@ final class SymfonyLockProviderTest extends TestCase
         $this->lockProvider->acquire('foo', $timeout);
     }
 
-    public function testGetWillThrowExceptionIfLockHasBeenAcquiredInSameRuntime()
+    public function testGetWillThrowExceptionIfLockHasBeenAcquiredInSameRuntime(): void
     {
         $this->expectException(LockNotAcquirable::class);
 
@@ -163,7 +162,7 @@ final class SymfonyLockProviderTest extends TestCase
         $this->lockProvider->acquire('foo', 0);
     }
 
-    public function testReleaseWillDoNothingIfLockWasNotAcquired()
+    public function testReleaseWillDoNothingIfLockWasNotAcquired(): void
     {
         $this->lockFactoryProvider->expects(self::once())
             ->method('getFactory')
@@ -182,7 +181,7 @@ final class SymfonyLockProviderTest extends TestCase
         $this->lockProvider->release('bar');
     }
 
-    public function testReleaseWillReleaseAcquiredLock()
+    public function testReleaseWillReleaseAcquiredLock(): void
     {
         $this->lockFactoryProvider->expects(self::once())
             ->method('getFactory')

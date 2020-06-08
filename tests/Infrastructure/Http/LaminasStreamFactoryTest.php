@@ -11,12 +11,12 @@ final class LaminasStreamFactoryTest extends TestCase
     /** @var LaminasStreamFactory */
     private $factory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->factory = new LaminasStreamFactory();
     }
 
-    public function testCreateFromStringWillReturnStream()
+    public function testCreateFromStringWillReturnStream(): void
     {
         $stream = $this->factory->createFromString('test');
 
