@@ -23,6 +23,48 @@ final class LaminasResponseFactoryTest extends TestCase
         );
     }
 
+    public function testCreatesApiProblemResponse(): void
+    {
+        $response = $this->factory->createJsonApiProblem(
+            'Short Title',
+            'Long Description'
+        );
+
+        self::assertSame(
+            [
+                'type' => 'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html',
+                'title' => 'Short Title',
+                'detail' => 'Long Description',
+                'status' => 500,
+            ],
+            \json_decode($response->getBody()->getContents(), true)
+        );
+        self::assertEquals(500, $response->getStatusCode());
+    }
+
+    public function testCreatesApiProblemResponseWithAdditionalInformation(): void
+    {
+        $response = $this->factory->createJsonApiProblem(
+            'Short Title',
+            'Long Description',
+            456,
+            ['foo' => 'bar'],
+            'https://connect.mos.com/error/oops'
+        );
+
+        self::assertEquals(
+            [
+                'type' => 'https://connect.mos.com/error/oops',
+                'title' => 'Short Title',
+                'detail' => 'Long Description',
+                'status' => 456,
+                'foo' => 'bar',
+            ],
+            \json_decode($response->getBody()->getContents(), true)
+        );
+        self::assertSame(456, $response->getStatusCode());
+    }
+
     public function testCreateResponseWillReturnInstanceOfResponseWithGivenStatusCode(): void
     {
         $statusCode = 201;

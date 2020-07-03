@@ -9,6 +9,21 @@ use Psr\Http\Message\UriInterface;
 interface ResponseFactory
 {
     /**
+     * Creates a RFC7807 API Problem response
+     *
+     * @link https://tools.ietf.org/html/rfc7807
+     *
+     * @param mixed[] $additionalInformation
+     */
+    public function createJsonApiProblem(
+        string $title,
+        string $detail,
+        int $statusCode = 500,
+        ?array $additionalInformation = null,
+        ?string $type = null
+    ): ResponseInterface;
+
+    /**
      * @param mixed $data
      */
     public function createJsonResponse($data, int $statusCode = 200): ResponseInterface;
