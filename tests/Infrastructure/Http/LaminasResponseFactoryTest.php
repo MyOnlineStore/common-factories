@@ -10,17 +10,90 @@ use Psr\Http\Message\StreamInterface;
 
 final class LaminasResponseFactoryTest extends TestCase
 {
-    /** @var StreamFactory */
-    private $streamFactory;
-
     /** @var LaminasResponseFactory */
     private $factory;
+
+    /** @var StreamFactory */
+    private $streamFactory;
 
     protected function setUp(): void
     {
         $this->factory = new LaminasResponseFactory(
             $this->streamFactory = $this->createMock(StreamFactory::class)
         );
+    }
+
+    public function testCreateJsonResponseWillReturnInstanceOfResponse(): void
+    {
+        $data = ['foo' => 'Twoich wyborów'];
+        $headers = ['qux' => 'lax'];
+        $response = $this->factory->createJsonResponse($data, 203, $headers, \JSON_PARTIAL_OUTPUT_ON_ERROR);
+
+        self::assertSame($data, \json_decode($response->getBody()->getContents(), true));
+        self::assertSame(203, $response->getStatusCode());
+        self::assertEquals(['qux' => ['lax'], 'content-type' => ['application/json']], $response->getHeaders());
+    }
+
+    public function testCreateRedirectResponseWillReturnInstanceOfResponseWithGivenStatusCode(): void
+    {
+        $response = $this->factory->createRedirectResponse(
+            $uri = 'http://foobar.baz',
+            $statusCode = 303
+        );
+
+        self::assertSame($statusCode, $response->getStatusCode());
+        self::assertSame([$uri], $response->getHeader('location'));
+    }
+
+    public function testCreateResponseFromStringWillReturnInstanceOfResponse(): void
+    {
+        $this->streamFactory->expects(self::once())
+            ->method('createFromString')
+            ->with('test')
+            ->willReturn($stream = $this->createMock(StreamInterface::class));
+
+        $response = $this->factory->createResponseFromString('test', 204, ['foo' => 'bar']);
+
+        self::assertSame($stream, $response->getBody());
+        self::assertSame(204, $response->getStatusCode());
+        self::assertSame(['foo' => ['bar']], $response->getHeaders());
+    }
+
+    public function testCreateResponseFromStringWithBodyAndStatusCodeOnlyWillReturnInstanceOfResponse(): void
+    {
+        $stream = $this->createMock(StreamInterface::class);
+
+        $this->streamFactory->expects(self::once())
+            ->method('createFromString')
+            ->with('test')
+            ->willReturn($stream);
+
+        $response = $this->factory->createResponseFromString('test', 204);
+
+        self::assertSame($stream, $response->getBody());
+        self::assertEquals(204, $response->getStatusCode());
+        self::assertEquals([], $response->getHeaders());
+    }
+
+    public function testCreateResponseFromStringWithBodyOnlyWillReturnInstanceOfResponse(): void
+    {
+        $this->streamFactory->expects(self::once())
+            ->method('createFromString')
+            ->with('test')
+            ->willReturn($stream = $this->createMock(StreamInterface::class));
+
+        $response = $this->factory->createResponseFromString('test');
+
+        self::assertSame($stream, $response->getBody());
+        self::assertSame(200, $response->getStatusCode());
+        self::assertSame([], $response->getHeaders());
+    }
+
+    public function testCreateResponseWillReturnInstanceOfResponseWithGivenStatusCode(): void
+    {
+        $statusCode = 201;
+
+        self::assertSame($statusCode, $this->factory->createResponse($statusCode)->getStatusCode());
     }
 
     public function testCreatesApiProblemResponse(): void
@@ -63,76 +136,5 @@ final class LaminasResponseFactoryTest extends TestCase
             \json_decode($response->getBody()->getContents(), true)
         );
         self::assertSame(456, $response->getStatusCode());
-    }
-
-    public function testCreateResponseWillReturnInstanceOfResponseWithGivenStatusCode(): void
-    {
-        $statusCode = 201;
-
-        self::assertSame($statusCode, $this->factory->createResponse($statusCode)->getStatusCode());
-    }
-
-    public function testCreateResponseFromStringWithBodyOnlyWillReturnInstanceOfResponse(): void
-    {
-        $this->streamFactory->expects(self::once())
-            ->method('createFromString')
-            ->with('test')
-            ->willReturn($stream = $this->createMock(StreamInterface::class));
-
-        $response = $this->factory->createResponseFromString('test');
-
-        self::assertSame($stream, $response->getBody());
-        self::assertSame(200, $response->getStatusCode());
-        self::assertSame([], $response->getHeaders());
-    }
-
-    public function testCreateResponseFromStringWithBodyAndStatusCodeOnlyWillReturnInstanceOfResponse(): void
-    {
-        $stream = $this->createMock(StreamInterface::class);
-
-        $this->streamFactory->expects(self::once())
-            ->method('createFromString')
-            ->with('test')
-            ->willReturn($stream);
-
-        $response = $this->factory->createResponseFromString('test', 204);
-
-        self::assertSame($stream, $response->getBody());
-        self::assertEquals(204, $response->getStatusCode());
-        self::assertEquals([], $response->getHeaders());
-    }
-
-    public function testCreateResponseFromStringWillReturnInstanceOfResponse(): void
-    {
-        $this->streamFactory->expects(self::once())
-            ->method('createFromString')
-            ->with('test')
-            ->willReturn($stream = $this->createMock(StreamInterface::class));
-
-        $response = $this->factory->createResponseFromString('test', 204, ['foo' => 'bar']);
-
-        self::assertSame($stream, $response->getBody());
-        self::assertSame(204, $response->getStatusCode());
-        self::assertSame(['foo' => ['bar']], $response->getHeaders());
-    }
-
-    public function testCreateJsonResponseWillReturnInstanceOfResponse(): void
-    {
-        $data = ['foo' => 'bar'];
-        $response = $this->factory->createJsonResponse($data, 203);
-
-        self::assertSame($data, \json_decode($response->getBody()->getContents(), true));
-        self::assertSame(203, $response->getStatusCode());
-    }
-
-    public function testCreateRedirectResponseWillReturnInstanceOfResponseWithGivenStatusCode(): void
-    {
-        $response = $this->factory->createRedirectResponse(
-            $uri = 'http://foobar.baz',
-            $statusCode = 303
-        );
-
-        self::assertSame($statusCode, $response->getStatusCode());
-        self::assertSame([$uri], $response->getHeader('location'));
     }
 }

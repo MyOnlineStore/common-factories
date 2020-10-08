@@ -59,13 +59,14 @@ final class SymfonyLockProviderTest extends TestCase
         self::assertEquals([$lockName], $this->lockProvider->getAcquiredLockNames());
     }
 
-    public function testGetWillThrowExceptionIfLockIsConflicted(): void
+    /**
+     * @dataProvider blockingTimoutDataProvider
+     */
+    public function testGetWillAcquireLock(int $timeout, bool $blocking): void
     {
-        $this->expectException(LockNotAcquirable::class);
-
         $this->lockFactoryProvider->expects(self::once())
             ->method('getFactory')
-            ->with($this->storage, 10000)
+            ->with($this->storage, 1000 * $timeout)
             ->willReturn($this->lockFactory);
 
         $this->lockFactory->expects(self::once())
@@ -73,12 +74,9 @@ final class SymfonyLockProviderTest extends TestCase
             ->with('foo')
             ->willReturn($this->lock);
 
-        $this->lock->expects(self::once())
-            ->method('acquire')
-            ->with(true)
-            ->willThrowException(new LockConflictedException());
+        $this->lock->expects(self::once())->method('acquire')->with($blocking)->willReturn(true);
 
-        $this->lockProvider->acquire('foo');
+        $this->lockProvider->acquire('foo', $timeout);
     }
 
     public function testGetWillThrowExceptionIfLockAcquireFailsWithAnException(): void
@@ -122,26 +120,6 @@ final class SymfonyLockProviderTest extends TestCase
         $this->lockProvider->acquire('foo');
     }
 
-    /**
-     * @dataProvider blockingTimoutDataProvider
-     */
-    public function testGetWillAcquireLock(int $timeout, bool $blocking): void
-    {
-        $this->lockFactoryProvider->expects(self::once())
-            ->method('getFactory')
-            ->with($this->storage, 1000 * $timeout)
-            ->willReturn($this->lockFactory);
-
-        $this->lockFactory->expects(self::once())
-            ->method('createLock')
-            ->with('foo')
-            ->willReturn($this->lock);
-
-        $this->lock->expects(self::once())->method('acquire')->with($blocking)->willReturn(true);
-
-        $this->lockProvider->acquire('foo', $timeout);
-    }
-
     public function testGetWillThrowExceptionIfLockHasBeenAcquiredInSameRuntime(): void
     {
         $this->expectException(LockNotAcquirable::class);
@@ -160,6 +138,28 @@ final class SymfonyLockProviderTest extends TestCase
 
         $this->lockProvider->acquire('foo', 0);
         $this->lockProvider->acquire('foo', 0);
+    }
+
+    public function testGetWillThrowExceptionIfLockIsConflicted(): void
+    {
+        $this->expectException(LockNotAcquirable::class);
+
+        $this->lockFactoryProvider->expects(self::once())
+            ->method('getFactory')
+            ->with($this->storage, 10000)
+            ->willReturn($this->lockFactory);
+
+        $this->lockFactory->expects(self::once())
+            ->method('createLock')
+            ->with('foo')
+            ->willReturn($this->lock);
+
+        $this->lock->expects(self::once())
+            ->method('acquire')
+            ->with(true)
+            ->willThrowException(new LockConflictedException());
+
+        $this->lockProvider->acquire('foo');
     }
 
     public function testReleaseWillDoNothingIfLockWasNotAcquired(): void

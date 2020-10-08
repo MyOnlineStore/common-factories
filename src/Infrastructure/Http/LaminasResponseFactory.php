@@ -49,9 +49,13 @@ final class LaminasResponseFactory implements ResponseFactory
     /**
      * @inheritDoc
      */
-    public function createJsonResponse($data, int $statusCode = 200): ResponseInterface
-    {
-        return new JsonResponse($data, $statusCode);
+    public function createJsonResponse(
+        $data,
+        int $statusCode = 200,
+        array $headers = [],
+        int $encodingOptions = \JSON_UNESCAPED_UNICODE
+    ): ResponseInterface {
+        return new JsonResponse($data, $statusCode, $headers, $encodingOptions);
     }
 
     /**
