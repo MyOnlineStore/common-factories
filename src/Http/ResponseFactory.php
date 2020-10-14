@@ -24,9 +24,15 @@ interface ResponseFactory
     ): ResponseInterface;
 
     /**
-     * @param mixed $data
+     * @param mixed    $data
+     * @param string[] $headers
      */
-    public function createJsonResponse($data, int $statusCode = 200): ResponseInterface;
+    public function createJsonResponse(
+        $data,
+        int $statusCode = 200,
+        array $headers = [],
+        int $encodingOptions = \JSON_UNESCAPED_UNICODE
+    ): ResponseInterface;
 
     /**
      * @param string|UriInterface $uri
