@@ -9,7 +9,7 @@
     <arg name="parallel" value="80"/>
     <arg value="sp"/>
 
-    <rule ref="vendor/myonlinestore/coding-standard/MyOnlineStore/ruleset.xml"/>
+    <rule ref="MyOnlineStore"/>
 
     <file>src/</file>
     <file>tests/</file>

@@ -9,7 +9,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php-version: ['7.2', '7.3', '7.4']
+                php-version: ['7.2', '7.3', '7.4', '8.0']
 
         runs-on: ubuntu-18.04
 
@@ -24,14 +24,14 @@ jobs:
                     coverage: pcov
 
             -   name: Cache Dependencies
-                uses: actions/cache@v1
+                uses: actions/cache@v2
                 with:
                     path: ~/.composer/cache
                     key: php${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.json') }}
                     restore-keys: php${{ matrix.php-version }}-composer-
 
             -   name: Install Dependencies
-                run: composer install --no-ansi --no-interaction --no-progress --no-suggest
+                run: composer install --no-ansi --no-interaction --no-progress
 
             -   name: Codestyle
                 run: vendor/bin/phpcs
@@ -40,7 +40,7 @@ jobs:
                 run: |
                     php vendor/bin/phpunit --coverage-text=coverage.txt --colors=never
                     COVERAGE=$(php -r 'preg_match("#Lines:\s*(\d+.\d+)%#", file_get_contents("coverage.txt"), $out); echo $out[1];')
-                    echo "::set-env name=COVERAGE::${COVERAGE}"
+                    echo "COVERAGE=${COVERAGE}" >> $GITHUB_ENV
 
             -   name: Psalm
                 run: vendor/bin/psalm  --output-format=github --shepherd

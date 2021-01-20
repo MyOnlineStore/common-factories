@@ -6,6 +6,7 @@ namespace MyOnlineStore\Common\Factory\Tests\Infrastructure\Locking;
 use MyOnlineStore\Common\Factory\Infrastructure\Locking\SymfonyLockFactoryProvider;
 use MyOnlineStore\Common\Factory\Infrastructure\Locking\SymfonyLockProvider;
 use MyOnlineStore\Common\Factory\Locking\LockNotAcquirable;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Lock\Exception\LockAcquiringException;
 use Symfony\Component\Lock\Exception\LockConflictedException;
@@ -15,19 +16,19 @@ use Symfony\Component\Lock\PersistingStoreInterface;
 
 final class SymfonyLockProviderTest extends TestCase
 {
-    /** @var LockInterface */
+    /** @var LockInterface&MockObject */
     private $lock;
 
-    /** @var LockFactory */
+    /** @var LockFactory&MockObject */
     private $lockFactory;
 
-    /** @var SymfonyLockFactoryProvider */
+    /** @var SymfonyLockFactoryProvider&MockObject */
     private $lockFactoryProvider;
 
     /** @var SymfonyLockProvider */
     private $lockProvider;
 
-    /** @var PersistingStoreInterface */
+    /** @var PersistingStoreInterface&MockObject */
     private $storage;
 
     protected function setUp(): void
@@ -41,6 +42,9 @@ final class SymfonyLockProviderTest extends TestCase
         $this->lockFactory = $this->createMock(LockFactory::class);
     }
 
+    /**
+     * @return \Generator<array{int, bool}>
+     */
     public function blockingTimoutDataProvider(): \Generator
     {
         yield [0, false];

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace MyOnlineStore\Common\Factory\Tests\Infrastructure\Random;
 
 use MyOnlineStore\Common\Factory\Infrastructure\Random\RandomLibTokenGenerator;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RandomLib\Generator;
 
@@ -12,7 +13,7 @@ final class RandomLibTokenGeneratorTest extends TestCase
     /** @var RandomLibTokenGenerator */
     private $generator;
 
-    /** @var Generator */
+    /** @var Generator&MockObject */
     private $mockGenerator;
 
     protected function setUp(): void
