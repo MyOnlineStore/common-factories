@@ -49,6 +49,7 @@ final class SymfonyBlockingLockFactoryProviderTest extends TestCase
 
                 $attribute->setAccessible(true);
                 $value = $attribute->getValue($factory);
+                \assert(\is_object($value));
                 $attribute->setAccessible(false);
 
                 return $value;

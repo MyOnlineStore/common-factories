@@ -3,35 +3,36 @@ declare(strict_types=1);
 
 namespace MyOnlineStore\Common\Factory\Tests\Infrastructure\Http;
 
-use MyOnlineStore\Common\Factory\Http\StreamFactory;
-use MyOnlineStore\Common\Factory\Infrastructure\Http\LaminasResponseFactory;
+use MyOnlineStore\Common\Factory\Infrastructure\Http\NyholmResponseFactory;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\StreamInterface;
 
-final class LaminasResponseFactoryTest extends TestCase
+final class NyholmResponseFactoryTest extends TestCase
 {
-    /** @var LaminasResponseFactory */
+    /** @var NyholmResponseFactory */
     private $factory;
-
-    /** @var StreamFactory */
-    private $streamFactory;
 
     protected function setUp(): void
     {
-        $this->factory = new LaminasResponseFactory(
-            $this->streamFactory = $this->createMock(StreamFactory::class)
-        );
+        $this->factory = new NyholmResponseFactory();
     }
 
     public function testCreateJsonResponseWillReturnInstanceOfResponse(): void
     {
         $data = ['foo' => 'Twoich wyborów'];
         $headers = ['qux' => 'lax'];
+
         $response = $this->factory->createJsonResponse($data, 203, $headers, \JSON_PARTIAL_OUTPUT_ON_ERROR);
 
-        self::assertSame($data, \json_decode($response->getBody()->getContents(), true));
+        self::assertSame($data, \json_decode((string) $response->getBody(), true));
         self::assertSame(203, $response->getStatusCode());
         self::assertEquals(['qux' => ['lax'], 'content-type' => ['application/json']], $response->getHeaders());
+    }
+
+    public function testCreateJsonResponseThrowsExceptionIfEncodingFailed(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->factory->createJsonResponse(\fopen('php://temp', 'r'));
     }
 
     public function testCreateRedirectResponseWillReturnInstanceOfResponseWithGivenStatusCode(): void
@@ -47,44 +48,27 @@ final class LaminasResponseFactoryTest extends TestCase
 
     public function testCreateResponseFromStringWillReturnInstanceOfResponse(): void
     {
-        $this->streamFactory->expects(self::once())
-            ->method('createFromString')
-            ->with('test')
-            ->willReturn($stream = $this->createMock(StreamInterface::class));
-
         $response = $this->factory->createResponseFromString('test', 204, ['foo' => 'bar']);
 
-        self::assertSame($stream, $response->getBody());
+        self::assertSame('test', (string) $response->getBody());
         self::assertSame(204, $response->getStatusCode());
         self::assertSame(['foo' => ['bar']], $response->getHeaders());
     }
 
     public function testCreateResponseFromStringWithBodyAndStatusCodeOnlyWillReturnInstanceOfResponse(): void
     {
-        $stream = $this->createMock(StreamInterface::class);
-
-        $this->streamFactory->expects(self::once())
-            ->method('createFromString')
-            ->with('test')
-            ->willReturn($stream);
-
         $response = $this->factory->createResponseFromString('test', 204);
 
-        self::assertSame($stream, $response->getBody());
+        self::assertSame('test', (string) $response->getBody());
         self::assertEquals(204, $response->getStatusCode());
         self::assertEquals([], $response->getHeaders());
     }
 
     public function testCreateResponseFromStringWithBodyOnlyWillReturnInstanceOfResponse(): void
     {
-        $this->streamFactory->expects(self::once())
-            ->method('createFromString')
-            ->with('test')
-            ->willReturn($stream = $this->createMock(StreamInterface::class));
-
         $response = $this->factory->createResponseFromString('test');
 
-        self::assertSame($stream, $response->getBody());
+        self::assertSame('test', (string) $response->getBody());
         self::assertSame(200, $response->getStatusCode());
         self::assertSame([], $response->getHeaders());
     }
@@ -110,7 +94,7 @@ final class LaminasResponseFactoryTest extends TestCase
                 'detail' => 'Long Description',
                 'status' => 500,
             ],
-            \json_decode($response->getBody()->getContents(), true)
+            \json_decode((string) $response->getBody(), true)
         );
         self::assertEquals(500, $response->getStatusCode());
     }
@@ -133,7 +117,7 @@ final class LaminasResponseFactoryTest extends TestCase
                 'status' => 456,
                 'foo' => 'bar',
             ],
-            \json_decode($response->getBody()->getContents(), true)
+            \json_decode((string) $response->getBody(), true)
         );
         self::assertSame(456, $response->getStatusCode());
     }

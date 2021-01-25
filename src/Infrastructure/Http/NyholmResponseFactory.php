@@ -3,24 +3,13 @@ declare(strict_types=1);
 
 namespace MyOnlineStore\Common\Factory\Infrastructure\Http;
 
-use Laminas\Diactoros\Response;
-use Laminas\Diactoros\Response\JsonResponse;
-use Laminas\Diactoros\Response\RedirectResponse;
 use MyOnlineStore\Common\Factory\Http\ResponseFactory;
-use MyOnlineStore\Common\Factory\Http\StreamFactory;
+use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 
-final class LaminasResponseFactory implements ResponseFactory
+final class NyholmResponseFactory implements ResponseFactory
 {
     private const RFC2616 = 'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html';
-
-    /** @var StreamFactory */
-    private $streamFactory;
-
-    public function __construct(StreamFactory $streamFactory)
-    {
-        $this->streamFactory = $streamFactory;
-    }
 
     /**
      * @inheritDoc
@@ -40,10 +29,10 @@ final class LaminasResponseFactory implements ResponseFactory
         ];
 
         if (null !== $additionalInformation) {
-            $data = \array_merge($additionalInformation, $data);
+            $data = \array_merge($data, $additionalInformation);
         }
 
-        return new JsonResponse($data, $statusCode);
+        return $this->createJsonResponse($data, $statusCode);
     }
 
     /**
@@ -55,7 +44,22 @@ final class LaminasResponseFactory implements ResponseFactory
         array $headers = [],
         int $encodingOptions = \JSON_UNESCAPED_UNICODE
     ): ResponseInterface {
-        return new JsonResponse($data, $statusCode, $headers, $encodingOptions);
+        $json = \json_encode($data, $encodingOptions);
+
+        if (\JSON_ERROR_NONE !== \json_last_error()) {
+            throw new \InvalidArgumentException(
+                \sprintf('Unable to encode data to JSON in %s: %s', self::class, \json_last_error_msg())
+            );
+        }
+
+        return new Response(
+            $statusCode,
+            \array_merge(
+                ['content-type' => 'application/json'],
+                $headers
+            ),
+            $json
+        );
     }
 
     /**
@@ -63,12 +67,12 @@ final class LaminasResponseFactory implements ResponseFactory
      */
     public function createRedirectResponse($uri, int $statusCode = 302): ResponseInterface
     {
-        return new RedirectResponse($uri, $statusCode);
+        return new Response($statusCode, ['location' => (string) $uri]);
     }
 
     public function createResponse(int $statusCode = 200): ResponseInterface
     {
-        return new Response('php://memory', $statusCode);
+        return new Response($statusCode);
     }
 
     /**
@@ -79,10 +83,6 @@ final class LaminasResponseFactory implements ResponseFactory
         int $statusCode = 200,
         array $headers = []
     ): ResponseInterface {
-        return new Response(
-            $this->streamFactory->createFromString($body),
-            $statusCode,
-            $headers
-        );
+        return new Response($statusCode, $headers, $body);
     }
 }
