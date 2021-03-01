@@ -40,7 +40,8 @@ final class SymfonyResponseFactory
     }
 
     /**
-     * @param mixed $data
+     * @param mixed    $data
+     * @param string[] $headers
      */
     public function createJsonResponse($data, int $statusCode = 200, array $headers = []): JsonResponse
     {
@@ -57,6 +58,9 @@ final class SymfonyResponseFactory
         return new Response(null, $statusCode);
     }
 
+    /**
+     * @param string[] $headers
+     */
     public function createResponseFromString(
         string $body,
         int $statusCode = 200,
