@@ -7,7 +7,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-final class SymfonyResponseFactory
+/**
+ * @final
+ */
+class SymfonyResponseFactory
 {
     private const RFC2616 = 'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html';
 
