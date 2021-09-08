@@ -9,7 +9,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php-version: ['7.2', '7.3', '7.4', '8.0']
+                php-version: ['7.2', '7.4', '8.0']
 
         runs-on: ubuntu-18.04
 
@@ -46,9 +46,9 @@ jobs:
                 run: vendor/bin/psalm  --output-format=github --shepherd
 
             -   name: Report PR Status
-                uses: actions/github-script@0.4.0
+                uses: actions/github-script@v4.1
                 with:
                     github-token: ${{ secrets.GITHUB_TOKEN }}
                     script: |
                         const coverage = parseFloat(process.env.COVERAGE);
-                        github.repos.createStatus({...context.repo, sha: context.sha, state: coverage > 99 ? 'success' : 'failure', context: 'Test Coverage', description: coverage+'%'});
+                        github.repos.createCommitStatus({...context.repo, sha: context.sha, state: coverage > 99 ? 'success' : 'failure', context: 'Test Coverage', description: coverage+'%'});

@@ -11,6 +11,16 @@
 
     <rule ref="MyOnlineStore"/>
 
+    <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint">
+        <properties>
+            <property name="enableMixedTypeHint" value="false"/>
+        </properties>
+    </rule>
+
+    <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint.UselessSuppress">
+        <exclude-pattern>src/Http/ResponseFactory.php</exclude-pattern>
+    </rule>
+
     <file>src/</file>
     <file>tests/</file>
 </ruleset>

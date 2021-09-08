@@ -13,7 +13,7 @@ interface ResponseFactory
      *
      * @link https://tools.ietf.org/html/rfc7807
      *
-     * @param mixed[] $additionalInformation
+     * @param array<string, mixed> $additionalInformation
      */
     public function createJsonApiProblem(
         string $title,
@@ -36,6 +36,8 @@ interface ResponseFactory
 
     /**
      * @param string|UriInterface $uri
+     *
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      */
     public function createRedirectResponse($uri, int $statusCode = 302): ResponseInterface;
 

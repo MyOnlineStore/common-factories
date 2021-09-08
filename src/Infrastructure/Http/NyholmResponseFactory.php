@@ -11,9 +11,6 @@ final class NyholmResponseFactory implements ResponseFactory
 {
     private const RFC2616 = 'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html';
 
-    /**
-     * @inheritDoc
-     */
     public function createJsonApiProblem(
         string $title,
         string $detail,
@@ -42,7 +39,7 @@ final class NyholmResponseFactory implements ResponseFactory
         $data,
         int $statusCode = 200,
         array $headers = [],
-        int $encodingOptions = \JSON_UNESCAPED_UNICODE
+        int $encodingOptions = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES
     ): ResponseInterface {
         $json = \json_encode($data, $encodingOptions);
 

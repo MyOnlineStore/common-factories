@@ -19,7 +19,7 @@ class SymfonyResponseFactory
      *
      * @link https://tools.ietf.org/html/rfc7807
      *
-     * @param mixed[] $additionalInformation
+     * @param array<string, mixed> $additionalInformation
      */
     public function createJsonApiProblem(
         string $title,
@@ -46,9 +46,21 @@ class SymfonyResponseFactory
      * @param mixed    $data
      * @param string[] $headers
      */
-    public function createJsonResponse($data, int $statusCode = 200, array $headers = []): JsonResponse
-    {
-        return new JsonResponse($data, $statusCode, $headers);
+    public function createJsonResponse(
+        $data,
+        int $statusCode = 200,
+        array $headers = [],
+        int $encodingOptions = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES
+    ): JsonResponse {
+        $json = \json_encode($data, $encodingOptions);
+
+        if (\JSON_ERROR_NONE !== \json_last_error()) {
+            throw new \InvalidArgumentException(
+                \sprintf('Unable to encode data to JSON in %s: %s', self::class, \json_last_error_msg())
+            );
+        }
+
+        return new JsonResponse($json, $statusCode, $headers, true);
     }
 
     public function createRedirectResponse(string $uri, int $statusCode = 302): RedirectResponse
