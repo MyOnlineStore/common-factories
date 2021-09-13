@@ -21,7 +21,7 @@
         "ircmaxell/random-lib": "^1.2",
         "symfony/lock": "^4.4 || ^5.2",
         "nyholm/psr7": "^1.4",
-        "symfony/http-foundation": "^5.2"
+        "symfony/http-foundation": "^4.4 || ^5.2"
     },
     "config": {
         "platform": {
