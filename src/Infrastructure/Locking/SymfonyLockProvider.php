@@ -12,25 +12,13 @@ use Symfony\Component\Lock\PersistingStoreInterface;
 
 final class SymfonyLockProvider implements LockProvider
 {
-    /** @var SymfonyLockFactoryProvider */
-    private $lockFactoryProvider;
-
-    /**
-     * @var LockInterface[]
-     *
-     * @psalm-var array<string, LockInterface>
-     */
-    private $locks = [];
-
-    /** @var PersistingStoreInterface */
-    private $storage;
+    /** @var array<string, LockInterface> */
+    private array $locks = [];
 
     public function __construct(
-        SymfonyLockFactoryProvider $lockFactoryProvider,
-        PersistingStoreInterface $storage
+        private SymfonyLockFactoryProvider $lockFactoryProvider,
+        private PersistingStoreInterface $storage,
     ) {
-        $this->lockFactoryProvider = $lockFactoryProvider;
-        $this->storage = $storage;
     }
 
     public function acquire(string $name, int $timeout = 10): void
@@ -48,8 +36,7 @@ final class SymfonyLockProvider implements LockProvider
 
                 return;
             }
-        } catch (LockConflictedException $exception) {
-        } catch (LockAcquiringException $exception) {
+        } catch (LockConflictedException | LockAcquiringException $exception) {
         }
 
         throw new LockNotAcquirable(
