@@ -3,16 +3,15 @@ declare(strict_types=1);
 
 namespace MyOnlineStore\Common\Factory\Tests\Infrastructure\Locking;
 
+use MyOnlineStore\Common\Factory\Infrastructure\Locking\RetryTillSaveStore;
 use MyOnlineStore\Common\Factory\Infrastructure\Locking\SymfonyBlockingLockFactoryProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\PersistingStoreInterface;
-use Symfony\Component\Lock\Store\RetryTillSaveStore;
 
 final class SymfonyBlockingLockFactoryProviderTest extends TestCase
 {
-    /** @var SymfonyBlockingLockFactoryProvider */
-    private $lockFactoryProvider;
+    private SymfonyBlockingLockFactoryProvider $lockFactoryProvider;
 
     protected function setUp(): void
     {

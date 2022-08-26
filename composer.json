@@ -15,23 +15,24 @@
         }
     },
     "require": {
-        "php": "^7.2 || ^8.0",
+        "php": "^8.0",
         "ext-json": "*",
         "psr/http-message": "^1.0",
         "ircmaxell/random-lib": "^1.2",
-        "symfony/lock": "^4.4 || ^5.2",
-        "nyholm/psr7": "^1.4",
-        "symfony/http-foundation": "^4.4 || ^5.2"
-    },
-    "config": {
-        "platform": {
-            "php": "7.2.24"
-        }
+        "symfony/lock": "^5.4 || ^6.0",
+        "nyholm/psr7": "^1.5",
+        "symfony/http-foundation": "^5.4 || ^6.0"
     },
     "require-dev": {
         "myonlinestore/coding-standard": "^3.1",
+        "myonlinestore/php-devtools": "^0.3",
         "psalm/plugin-phpunit": "^0.16",
-        "vimeo/psalm": "^4.10",
-        "phpunit/phpunit": "^8.5"
+        "vimeo/psalm": "^4.23",
+        "phpunit/phpunit": "^9.5"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }

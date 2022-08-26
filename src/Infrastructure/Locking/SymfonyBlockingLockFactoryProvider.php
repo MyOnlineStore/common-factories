@@ -5,7 +5,6 @@ namespace MyOnlineStore\Common\Factory\Infrastructure\Locking;
 
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\PersistingStoreInterface;
-use Symfony\Component\Lock\Store\RetryTillSaveStore;
 
 final class SymfonyBlockingLockFactoryProvider implements SymfonyLockFactoryProvider
 {
