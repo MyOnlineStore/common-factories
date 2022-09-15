@@ -9,8 +9,6 @@ interface Strategy
 
     public function getLockName(): string;
 
-    /**
-     * @return int Seconds
-     */
+    /** @return int Seconds */
     public function getLockDuration(): int;
 }

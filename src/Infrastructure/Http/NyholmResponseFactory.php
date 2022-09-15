@@ -9,14 +9,14 @@ use Psr\Http\Message\ResponseInterface;
 
 final class NyholmResponseFactory implements ResponseFactory
 {
-    private const RFC2616 = 'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html';
+    private const RFC2616 = 'https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html';
 
     public function createJsonApiProblem(
         string $title,
         string $detail,
         int $statusCode = 500,
-        ?array $additionalInformation = null,
-        ?string $type = null
+        array|null $additionalInformation = null,
+        string|null $type = null,
     ): ResponseInterface {
         $data = [
             'type' => $type ?: self::RFC2616,
@@ -32,20 +32,18 @@ final class NyholmResponseFactory implements ResponseFactory
         return $this->createJsonResponse($data, $statusCode);
     }
 
-    /**
-     * @inheritDoc
-     */
+    /** @inheritDoc */
     public function createJsonResponse(
         $data,
         int $statusCode = 200,
         array $headers = [],
-        int $encodingOptions = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES
+        int $encodingOptions = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES,
     ): ResponseInterface {
         $json = \json_encode($data, $encodingOptions);
 
         if (\JSON_ERROR_NONE !== \json_last_error()) {
             throw new \InvalidArgumentException(
-                \sprintf('Unable to encode data to JSON in %s: %s', self::class, \json_last_error_msg())
+                \sprintf('Unable to encode data to JSON in %s: %s', self::class, \json_last_error_msg()),
             );
         }
 
@@ -53,15 +51,13 @@ final class NyholmResponseFactory implements ResponseFactory
             $statusCode,
             \array_merge(
                 ['content-type' => 'application/json'],
-                $headers
+                $headers,
             ),
-            $json
+            $json,
         );
     }
 
-    /**
-     * @inheritDoc
-     */
+    /** @inheritDoc */
     public function createRedirectResponse($uri, int $statusCode = 302): ResponseInterface
     {
         return new Response($statusCode, ['location' => (string) $uri]);
@@ -72,13 +68,11 @@ final class NyholmResponseFactory implements ResponseFactory
         return new Response($statusCode);
     }
 
-    /**
-     * @inheritDoc
-     */
+    /** @inheritDoc */
     public function createResponseFromString(
         string $body,
         int $statusCode = 200,
-        array $headers = []
+        array $headers = [],
     ): ResponseInterface {
         return new Response($statusCode, $headers, $body);
     }

@@ -42,13 +42,11 @@ final class SymfonyLockProvider implements LockProvider
         throw new LockNotAcquirable(
             \sprintf('Unable to acquire lock "%s"', $name),
             0,
-            isset($exception) && $exception instanceof \Throwable ? $exception : null
+            isset($exception) && $exception instanceof \Throwable ? $exception : null,
         );
     }
 
-    /**
-     * @inheritDoc
-     */
+    /** @inheritDoc */
     public function getAcquiredLockNames(): array
     {
         return \array_keys($this->locks);

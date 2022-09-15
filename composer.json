@@ -15,7 +15,7 @@
         }
     },
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "ext-json": "*",
         "psr/http-message": "^1.0",
         "ircmaxell/random-lib": "^1.2",
@@ -24,9 +24,9 @@
         "symfony/http-foundation": "^5.4 || ^6.0"
     },
     "require-dev": {
-        "myonlinestore/coding-standard": "^3.1",
+        "myonlinestore/coding-standard": "^4.0",
         "myonlinestore/php-devtools": "^0.3",
-        "psalm/plugin-phpunit": "^0.16",
+        "psalm/plugin-phpunit": "^0.17",
         "vimeo/psalm": "^4.23",
         "phpunit/phpunit": "^9.5"
     },

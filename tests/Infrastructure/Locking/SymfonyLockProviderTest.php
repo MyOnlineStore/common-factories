@@ -35,16 +35,14 @@ final class SymfonyLockProviderTest extends TestCase
     {
         $this->lockProvider = new SymfonyLockProvider(
             $this->lockFactoryProvider = $this->createMock(SymfonyLockFactoryProvider::class),
-            $this->storage = $this->createMock(PersistingStoreInterface::class)
+            $this->storage = $this->createMock(PersistingStoreInterface::class),
         );
 
         $this->lock = $this->createMock(LockInterface::class);
         $this->lockFactory = $this->createMock(LockFactory::class);
     }
 
-    /**
-     * @return \Generator<array{int, bool}>
-     */
+    /** @return \Generator<array{int, bool}> */
     public function blockingTimoutDataProvider(): \Generator
     {
         yield [0, false];
@@ -63,9 +61,7 @@ final class SymfonyLockProviderTest extends TestCase
         self::assertEquals([$lockName], $this->lockProvider->getAcquiredLockNames());
     }
 
-    /**
-     * @dataProvider blockingTimoutDataProvider
-     */
+    /** @dataProvider blockingTimoutDataProvider */
     public function testGetWillAcquireLock(int $timeout, bool $blocking): void
     {
         $this->lockFactoryProvider->expects(self::once())

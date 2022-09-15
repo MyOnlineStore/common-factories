@@ -7,12 +7,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @final
- */
+/** @final */
 class SymfonyResponseFactory
 {
-    private const RFC2616 = 'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html';
+    private const RFC2616 = 'https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html';
 
     /**
      * Creates a RFC7807 API Problem response
@@ -25,8 +23,8 @@ class SymfonyResponseFactory
         string $title,
         string $detail,
         int $statusCode = 500,
-        ?array $additionalInformation = null,
-        ?string $type = null
+        array|null $additionalInformation = null,
+        string|null $type = null,
     ): JsonResponse {
         $data = [
             'type' => $type ?: self::RFC2616,
@@ -50,13 +48,13 @@ class SymfonyResponseFactory
         $data,
         int $statusCode = 200,
         array $headers = [],
-        int $encodingOptions = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES
+        int $encodingOptions = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES,
     ): JsonResponse {
         $json = \json_encode($data, $encodingOptions);
 
         if (\JSON_ERROR_NONE !== \json_last_error()) {
             throw new \InvalidArgumentException(
-                \sprintf('Unable to encode data to JSON in %s: %s', self::class, \json_last_error_msg())
+                \sprintf('Unable to encode data to JSON in %s: %s', self::class, \json_last_error_msg()),
             );
         }
 
@@ -73,13 +71,11 @@ class SymfonyResponseFactory
         return new Response(null, $statusCode);
     }
 
-    /**
-     * @param string[] $headers
-     */
+    /** @param string[] $headers */
     public function createResponseFromString(
         string $body,
         int $statusCode = 200,
-        array $headers = []
+        array $headers = [],
     ): Response {
         return new Response($body, $statusCode, $headers);
     }

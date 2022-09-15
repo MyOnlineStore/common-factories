@@ -13,7 +13,7 @@ final class FixedTest extends TestCase
     {
         $strategy = new Fixed(
             $lockName = 'foo',
-            $lockDuration = 132
+            $lockDuration = 132,
         );
 
         self::assertSame($lockName, $strategy->getLockName());

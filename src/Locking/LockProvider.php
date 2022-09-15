@@ -5,9 +5,7 @@ namespace MyOnlineStore\Common\Factory\Locking;
 
 interface LockProvider
 {
-    /**
-     * @throws LockNotAcquirable
-     */
+    /** @throws LockNotAcquirable */
     public function acquire(string $name, int $timeout = 10): void;
 
     /**

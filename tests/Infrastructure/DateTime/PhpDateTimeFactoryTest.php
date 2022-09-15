@@ -23,7 +23,7 @@ final class PhpDateTimeFactoryTest extends TestCase
 
         self::assertEquals(
             new \DateTime($time, $dateTimeZone),
-            $this->factory->create($time, $dateTimeZone)
+            $this->factory->create($time, $dateTimeZone),
         );
     }
 
@@ -34,7 +34,7 @@ final class PhpDateTimeFactoryTest extends TestCase
 
         self::assertEquals(
             new \DateTimeImmutable($time, $dateTimeZone),
-            $this->factory->createImmutable($time, $dateTimeZone)
+            $this->factory->createImmutable($time, $dateTimeZone),
         );
     }
 
@@ -42,7 +42,7 @@ final class PhpDateTimeFactoryTest extends TestCase
     {
         self::assertEquals(
             \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-11-06 14:00:00'),
-            $this->factory->createImmutableFromFormat('Y-m-d H:i:s', '2018-11-06 14:00:00')
+            $this->factory->createImmutableFromFormat('Y-m-d H:i:s', '2018-11-06 14:00:00'),
         );
     }
 
@@ -52,7 +52,7 @@ final class PhpDateTimeFactoryTest extends TestCase
 
         self::assertEquals(
             \DateTimeImmutable::createFromMutable($dateTime),
-            $this->factory->createImmutableFromMutable($dateTime)
+            $this->factory->createImmutableFromMutable($dateTime),
         );
     }
 }

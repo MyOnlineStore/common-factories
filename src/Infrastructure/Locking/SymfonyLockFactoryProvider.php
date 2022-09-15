@@ -8,8 +8,6 @@ use Symfony\Component\Lock\PersistingStoreInterface;
 
 interface SymfonyLockFactoryProvider
 {
-    /**
-     * @param int $timeout Number of milliseconds to wait for lock
-     */
+    /** @param int $timeout Number of milliseconds to wait for lock */
     public function getFactory(PersistingStoreInterface $store, int $timeout = 0): LockFactory;
 }

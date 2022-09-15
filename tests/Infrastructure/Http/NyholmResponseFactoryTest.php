@@ -39,7 +39,7 @@ final class NyholmResponseFactoryTest extends TestCase
     {
         $response = $this->factory->createRedirectResponse(
             $uri = 'http://foobar.baz',
-            $statusCode = 303
+            $statusCode = 303,
         );
 
         self::assertSame($statusCode, $response->getStatusCode());
@@ -84,17 +84,17 @@ final class NyholmResponseFactoryTest extends TestCase
     {
         $response = $this->factory->createJsonApiProblem(
             'Short Title',
-            'Long Description'
+            'Long Description',
         );
 
         self::assertSame(
             [
-                'type' => 'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html',
+                'type' => 'https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html',
                 'title' => 'Short Title',
                 'detail' => 'Long Description',
                 'status' => 500,
             ],
-            \json_decode((string) $response->getBody(), true)
+            \json_decode((string) $response->getBody(), true),
         );
         self::assertEquals(500, $response->getStatusCode());
     }
@@ -106,7 +106,7 @@ final class NyholmResponseFactoryTest extends TestCase
             'Long Description',
             456,
             ['foo' => 'bar'],
-            'https://connect.mos.com/error/oops'
+            'https://connect.mos.com/error/oops',
         );
 
         self::assertEquals(
@@ -117,7 +117,7 @@ final class NyholmResponseFactoryTest extends TestCase
                 'status' => 456,
                 'foo' => 'bar',
             ],
-            \json_decode((string) $response->getBody(), true)
+            \json_decode((string) $response->getBody(), true),
         );
         self::assertSame(456, $response->getStatusCode());
     }

@@ -22,7 +22,7 @@ final class SymfonyBlockingLockFactoryProviderTest extends TestCase
     {
         $factory = $this->lockFactoryProvider->getFactory(
             $store = $this->createMock(PersistingStoreInterface::class),
-            0
+            0,
         );
 
         self::assertSame($store, $this->getLock($factory));
@@ -32,7 +32,7 @@ final class SymfonyBlockingLockFactoryProviderTest extends TestCase
     {
         $factory = $this->lockFactoryProvider->getFactory(
             $this->createMock(PersistingStoreInterface::class),
-            100
+            100,
         );
 
         self::assertInstanceOf(RetryTillSaveStore::class, $this->getLock($factory));
@@ -52,7 +52,7 @@ final class SymfonyBlockingLockFactoryProviderTest extends TestCase
                 $attribute->setAccessible(false);
 
                 return $value;
-            } catch (\ReflectionException $e) {
+            } catch (\ReflectionException) {
             }
         } while ($reflector = $reflector->getParentClass());
 

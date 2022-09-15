@@ -19,7 +19,7 @@ final class RandomLibTokenGeneratorTest extends TestCase
     protected function setUp(): void
     {
         $this->generator = new RandomLibTokenGenerator(
-            $this->mockGenerator = $this->createMock(Generator::class)
+            $this->mockGenerator = $this->createMock(Generator::class),
         );
     }
 

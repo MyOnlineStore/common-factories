@@ -19,8 +19,8 @@ interface ResponseFactory
         string $title,
         string $detail,
         int $statusCode = 500,
-        ?array $additionalInformation = null,
-        ?string $type = null
+        array|null $additionalInformation = null,
+        string|null $type = null,
     ): ResponseInterface;
 
     /**
@@ -31,7 +31,7 @@ interface ResponseFactory
         $data,
         int $statusCode = 200,
         array $headers = [],
-        int $encodingOptions = \JSON_UNESCAPED_UNICODE
+        int $encodingOptions = \JSON_UNESCAPED_UNICODE,
     ): ResponseInterface;
 
     /**
@@ -43,12 +43,10 @@ interface ResponseFactory
 
     public function createResponse(int $statusCode = 200): ResponseInterface;
 
-    /**
-     * @param string[]|string[][] $headers
-     */
+    /** @param string[]|string[][] $headers */
     public function createResponseFromString(
         string $body,
         int $statusCode = 200,
-        array $headers = []
+        array $headers = [],
     ): ResponseInterface;
 }
